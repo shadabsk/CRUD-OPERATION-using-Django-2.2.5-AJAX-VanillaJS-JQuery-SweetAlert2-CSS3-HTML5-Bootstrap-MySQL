@@ -1,0 +1,222 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Colorlib Templates">
+    <meta name="author" content="Colorlib">
+    <meta name="keywords" content="Colorlib Templates">
+
+    <!-- Title Page-->
+    <title>ARKP Sample Template</title>
+
+    <!-- Icons font CSS-->
+    <link href= {% static "vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all "%}>
+    <link href= {% static "vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all" %}>
+    <!-- Font special for pages-->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
+
+    <!-- Main CSS-->
+    <link href={% static "css/main.css" %} rel="stylesheet" media="all">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+    
+    <script src={% static "js/sweetalert2.all.min.js" %}></script>
+    <link rel="stylesheet" href={% static "css/sweetalert.min.css" %}>
+    
+
+    <style>
+      .card-2 .card-heading {
+        
+        width: 19.1%;
+        display: table-cell;
+      }
+    </style>
+</head>
+
+<body>
+    <div class="page-wrapper bg-red p-t-180 p-b-100 font-robo">
+        <div class="wrapper wrapper--w960">
+            <div class="card card-2">
+                <div class="card-heading">
+                  <div class="p-t-30">
+                      <button class="btn btn--radius btn--green" id='registshow' type="button" style='width: 200px;'>Registration</button>
+                  </div><br><br><br>
+                  <div class="p-t-30">
+                      <button class="btn btn--radius btn--green" id='loginshow' type="button" style='width: 200px;'>Login</button>
+                  </div>
+                </div>
+                <div class="card-body" id='regist'>
+                    <h2 class="title">Registration Info</h2>
+                    <form method="POST" id='regform'>
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input class="input--style-2" type="text" placeholder="Username" id='uname' name="name">
+                        </div>
+                        <div id='usererr'></div><br>
+                        <div class="input-group">
+                            <input class="input--style-2" type="password" placeholder="Password" name="pass">
+                        </div>
+                        <div class="input-group">
+                            <input class="input--style-2" type="text" placeholder="Email" name="email">
+                        </div>
+                        <div class="input-group">
+                            <input class="input--style-2" type="text" placeholder="Contact" name="contact">
+                        </div>
+                        <div class="p-t-30">
+                            <button class="btn btn--radius btn--green" id='regsubmit' type="submit">Submit</button>
+                            <span id='load'></span>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-body" id='login' style='display: none;'>
+                    <h2 class="title">Login Info</h2>
+                    <form method="POST" id='loginform'>
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input class="input--style-2" type="text" placeholder="Username" name="namelog">
+                        </div>
+                        <div class="input-group">
+                            <input class="input--style-2" type="password" placeholder="Password" name="passlog">
+                        </div>
+                        <div class="p-t-30">
+                            <button class="btn btn--radius btn--green" id='logsubmit' type="submit">Login</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card-body" id='logincrud' style='display: none;'>
+                    <h2 class="title">User Info</h2>
+                    <form method="POST" id='regformedit'>
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input class="input--style-2" type="text" placeholder="Username" id='upname' name="upname" readonly>
+                        </div>
+                        <div class="input-group">
+                            <input class="input--style-2" type="password" placeholder="Password" name="uppass">
+                        </div>
+                        <div class="input-group">
+                            <input class="input--style-2" type="text" placeholder="Email" name="upemail">
+                        </div>
+                        <div class="input-group">
+                            <input class="input--style-2" type="text" placeholder="Contact" name="upcontact">
+                        </div>
+                        <div class="p-t-30">
+                            <button class="btn btn--radius btn--green" id='regsubmitedit' type="submit">Edit</button>
+                            <button class="btn btn--radius btn--green" id='regsubmitdelete' type="button">Delete</button>
+                            <span id='loadupdate'></span>
+                        </div>
+                    </form>
+                    
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Jquery JS-->
+    <script type='text/javascript'>
+      $(document).ready(function(){
+        $('#loginshow').on('click',function(){
+          $('#regist').hide();
+          $('#login').fadeIn(2000);
+        })
+
+        $('#registshow').on('click',function(){
+          $('#login').hide();
+          $('#regist').fadeIn(2000);
+        })
+      })
+
+      //for checking the user is availble or not
+    $("#uname").on('keyup',function(e){
+        var uname=$(this).val();
+        if(!uname||uname===' ')
+        {	
+            $(this).val("");
+            $('#usererr').html('<span class="alert alert-danger">Empty field  is not allow</span>');
+        }
+        else{
+            var dataString='uname='+uname;
+            $.ajax({
+                type:'POST',
+                url:'checkuser',
+                data:{
+                    uname:$('#uname').val(),
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                },
+                cache:false,
+                success:function(available){
+                    if(available.None)
+                    {
+                        $('#usererr').html('<div class="input--style-2" style="background-color: lightgreen; color:black; width:200px;">UserName is available</div>');
+                    }
+                    else
+                    {
+                        $('#usererr').html('<div class="input--style-2" style="background-color: Tomato; color:white; width:200px;" >UserName is Not available</div>');
+                    }
+                },
+            });
+        }
+    });
+
+    $("#regsubmitdelete").on('click',function(e){
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.value) {
+            $.ajax({
+              type:'POST',
+              url:'deleteUser',
+              data:{
+                  uname:$('#upname').val(),
+                  csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+              },
+              cache:false,
+              success:function(available){
+                  if(available.True)
+                  {
+                      Swal.fire(
+                        'Deleted!',
+                        'Deleted Successfully.',
+                        'success'
+                      ).then((result) => {
+                        window.location.href='';
+                      })
+
+                    
+                  }
+                  else
+                  {
+                      $('#usererr').html('<div class="input--style-2" style="background-color: Tomato; color:white; width:200px;" >UserName is Not available</div>');
+                  }
+              }
+          });
+          }
+        })
+        
+      
+    });
+
+      var pic2 = "{% static 'img/Loader.gif' %}";
+			var token = '{{csrf_token}}';   
+    </script>
+    
+    <script src={% static "js/registerUser.js" %} ></script>
+    <script src={% static "js/login.js" %} ></script>
+    <script src={% static "js/updateUser.js" %} ></script>
+
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+
+</html>
+<!-- end document-->
