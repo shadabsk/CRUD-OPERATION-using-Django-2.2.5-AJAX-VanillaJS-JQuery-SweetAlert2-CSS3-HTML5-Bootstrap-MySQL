@@ -62,7 +62,8 @@ enabling apache and mySQL server in xampp application
 
 <div align="center">
 	[![CRUD Operation via Django Framework & jQuery with AJAX
-	](https://i.ytimg.com/vi/ahj89qrpcsg/hqdefault.jpg)](https://youtu.be/ahj89qrpcsg)
+	](https://i.ytimg.com/vi/ahj89qrpcsg/hqdefault.jpg)]
+	(https://youtu.be/ahj89qrpcsg)
 </div>
 
 
