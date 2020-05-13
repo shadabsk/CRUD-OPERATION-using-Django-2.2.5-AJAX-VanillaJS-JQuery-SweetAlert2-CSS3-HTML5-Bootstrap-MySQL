@@ -62,7 +62,7 @@ enabling apache and mySQL server in xampp application
 
 
 [![CRUD Operation via Django Framework & jQuery with AJAX
-](https://i.ytimg.com/vi/ahj89qrpcsg/maxresdefault.jpg)](https://youtu.be/ahj89qrpcsg)
+](https://i.ytimg.com/vi/ahj89qrpcsg/hqdefault.jpg)](https://youtu.be/ahj89qrpcsg)
 
 
 ## Authors
